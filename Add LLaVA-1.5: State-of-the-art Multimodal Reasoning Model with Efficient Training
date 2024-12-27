@@ -1,0 +1,39 @@
+### LLaVA-1.5: Improved Reasoning with Large Language and Vision Assistant
+
+**Category**: Multimodal Models | Vision-Language Understanding
+
+**Description**: LLaVA-1.5 represents a breakthrough in multimodal AI by introducing a highly efficient vision-language connector architecture. The model achieves state-of-the-art performance across 11 benchmarks while maintaining remarkable training efficiency (1 day on 8-A100s with just 1.2M training samples). The implementation features a CLIP-ViT-L-336px backbone with MLP projection, demonstrating superior compositional reasoning and reduced hallucination compared to previous approaches.
+
+**Why it matters for A2A**: The model's efficient architecture and robust visual reasoning capabilities make it an ideal foundation for agent-to-agent systems requiring reliable visual understanding and communication. Its public implementation and reproducible results enable straightforward integration into existing A2A frameworks.
+
+**Resources**:
+- [Paper](https://arxiv.org/abs/2310.03744)
+- [GitHub Repository](https://github.com/haotian-liu/LLaVA)
+- [Demo](https://llava-vl.github.io)
+
+**Sample Implementation**:
+```python
+from llava.model import LlavaLlamaForCausalLM
+from llava.conversation import conv_templates
+from llava.utils import disable_torch_init
+from llava.constants import IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
+
+# Initialize model
+model = LlavaLlamaForCausalLM.from_pretrained(
+    'liuhaotian/llava-v1.5-13b',
+    low_cpu_mem_usage=True,
+    torch_dtype=torch.float16,
+    use_cache=True
+)
+
+# Process image and generate response
+def process_image(image_path, prompt):
+    image = Image.open(image_path)
+    image_tensor = process_image(image)  # Convert to model-compatible format
+    response = model.generate(
+        image_tensor,
+        prompt,
+        max_new_tokens=512,
+        temperature=0.7
+    )
+    return response
